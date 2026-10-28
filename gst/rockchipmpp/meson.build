@@ -5,6 +5,7 @@ rockchipmpp_sources = [
   'gstmppgpu.c',
   'gstmppjpegdec.c',
   'gstmpprga.c',
+  'gstmpprgaelement.c',
   'gstmppvideodec.c',
   'gstmppenc.c',
   'gstmppjpegenc.c',
