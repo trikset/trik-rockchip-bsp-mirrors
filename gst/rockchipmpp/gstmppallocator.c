@@ -282,19 +282,19 @@ gst_mpp_allocator_free (GstAllocator * allocator, GstMemory * gmem)
 }
 
 GstAllocator *
-gst_mpp_allocator_new (void)
+gst_mpp_allocator_new_with_type (MppBufferType type)
 {
   GstMppAllocator *alloc;
   MppBufferGroup group, ext_group;
 
   static gint num_mpp_alloc = 0;
 
-  if (mpp_buffer_group_get_internal (&group, MPP_BUFFER_TYPE_DRM))
-    return FALSE;
+  if (mpp_buffer_group_get_internal (&group, type))
+    return NULL;
 
   if (mpp_buffer_group_get_external (&ext_group, MPP_BUFFER_TYPE_DRM)) {
     mpp_buffer_group_put (group);
-    return FALSE;
+    return NULL;
   }
 
   alloc = g_object_new (GST_TYPE_MPP_ALLOCATOR, NULL);
@@ -306,6 +306,16 @@ gst_mpp_allocator_new (void)
   alloc->cacheable = TRUE;
 
   return GST_ALLOCATOR_CAST (alloc);
+}
+
+GstAllocator *
+gst_mpp_allocator_new (void)
+{
+  /* RGA2 cannot access pages above 4G. Keep the historical DMA32 default for
+   * all MPP allocations so the decoder/encoder conversion paths keep working
+   * on boards with more than 4G of RAM. */
+  return gst_mpp_allocator_new_with_type ((MppBufferType)
+      (MPP_BUFFER_TYPE_DRM | MPP_BUFFER_FLAGS_DMA32));
 }
 
 static void

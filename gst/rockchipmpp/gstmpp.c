@@ -37,6 +37,7 @@
 #include "gstmppjpegdec.h"
 #include "gstmppvideodec.h"
 #include "gstmppvpxalphadecodebin.h"
+#include "gstmpprgaelement.h"
 
 GST_DEBUG_CATEGORY_STATIC (mpp_debug);
 #define GST_CAT_DEFAULT mpp_debug
@@ -70,10 +71,10 @@ struct gst_mpp_format gst_mpp_formats[] = {
   GST_MPP_FORMAT (NV61, YUV422SP_VU, YCrCb_422_SP, 1, 1),
   GST_MPP_FORMAT (NV24, YUV444SP, UNKNOWN, 1, 1),
   GST_MPP_FORMAT (Y444, YUV444P, UNKNOWN, 1, 1),
-  GST_MPP_FORMAT (YUY2, YUV422_YUYV, UNKNOWN, 2, 1),
-  GST_MPP_FORMAT (YVYU, YUV422_YVYU, UNKNOWN, 2, 1),
-  GST_MPP_FORMAT (UYVY, YUV422_UYVY, UNKNOWN, 2, 1),
-  GST_MPP_FORMAT (VYUY, YUV422_VYUY, UNKNOWN, 2, 1),
+  GST_MPP_FORMAT (YUY2, YUV422_YUYV, YUYV_422, 2, 1),
+  GST_MPP_FORMAT (YVYU, YUV422_YVYU, YVYU_422, 2, 1),
+  GST_MPP_FORMAT (UYVY, YUV422_UYVY, UYVY_422, 2, 1),
+  GST_MPP_FORMAT (VYUY, YUV422_VYUY, VYUY_422, 2, 1),
   GST_MPP_FORMAT (RGB16, RGB565LE, UNKNOWN, 2, 0),
   GST_MPP_FORMAT (BGR16, BGR565LE, RGB_565, 2, 0),
   GST_MPP_FORMAT (RGB, RGB888, RGB_888, 3, 0),
@@ -295,6 +296,10 @@ plugin_init (GstPlugin * plugin)
 
   gst_mpp_video_dec_register (plugin, GST_RANK_PRIMARY + 1);
   gst_mpp_jpeg_dec_register (plugin, GST_RANK_PRIMARY + 1);
+
+#ifdef HAVE_RGA
+  gst_mpp_rga_register (plugin, GST_RANK_PRIMARY + 1);
+#endif
 
 #ifdef USE_VPXALPHADEC
   gst_mpp_vpx_alpha_decode_bin_register (plugin,

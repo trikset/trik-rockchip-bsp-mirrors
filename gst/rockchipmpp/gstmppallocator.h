@@ -24,11 +24,14 @@
 
 #include <gst/video/video.h>
 
+#include <rockchip/mpp_buffer.h>
 #include <rockchip/rk_mpi.h>
 
 G_BEGIN_DECLS;
 
 GstAllocator *gst_mpp_allocator_new (void);
+
+GstAllocator *gst_mpp_allocator_new_with_type (MppBufferType type);
 
 void gst_mpp_allocator_set_cacheable (GstAllocator * allocator,
     gboolean cacheable);
